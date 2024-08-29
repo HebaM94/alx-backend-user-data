@@ -68,9 +68,29 @@ def get_logger() -> logging.Logger:
 def get_db() -> connector.MySQLConnection:
     """ Establishes a database connection """
     username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
-    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
     host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
-    database = os.getenv('PERSONAL_DATA_DB_NAME', 'my_db')
+    database = os.getenv('PERSONAL_DATA_DB_NAME', '')
     connection = connector.connect(host=host, database=database,
                                    user=username, password=password)
     return connection
+
+
+def main() -> None:
+    """ Retrieves data from database tables and
+        logs its while obfuscating sensitive fields
+    """
+    db_connection = get_db()
+    cursor = db_connection.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users;")
+    logger = get_logger()
+    for row in cursor:
+        message = ';'.join(["{}={}".format(key, value)
+                            for key, value in row.items()])
+        logger.info(message)
+    cursor.close()
+    db_connection.close()
+
+
+if __name__ == "__main__":
+    main()
