@@ -4,7 +4,6 @@ from typing import List
 import re
 import logging
 import mysql.connector as connector
-from mysql.connector import Error
 import os
 
 
@@ -72,15 +71,9 @@ def get_db() -> connector.MySQLConnection:
     password = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ""
     host = os.getenv('PERSONAL_DATA_DB_HOST') or "localhost"
     database = os.getenv('PERSONAL_DATA_DB_NAME')
-    try:
-        connection = connector.connect(host=host, database=database,
+    connection = connector.connect(host=host, database=database,
                                    user=username, password=password)
-        if connection.is_connected():
-            return connection
-    except Error as e:
-        print(f"Error: {e}")
-        return None
-
+    return connection
 
 
 def main() -> None:
