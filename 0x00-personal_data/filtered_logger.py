@@ -9,6 +9,16 @@ import os
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
+def get_db() -> connector.connection.MySQLConnection:
+    """ Establishes a database connection """
+    username = os.getenv('PERSONAL_DATA_DB_USERNAME') or "root"
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ""
+    host = os.getenv('PERSONAL_DATA_DB_HOST') or "localhost"
+    database = os.getenv('PERSONAL_DATA_DB_NAME')
+    connection = connector.connect(host=host, database=database,
+                                   user=username, password=password)
+    return connection
+
 
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
@@ -63,17 +73,6 @@ def get_logger() -> logging.Logger:
     logger.setLevel(logging.INFO)
     logger.addHandler(stream_handler)
     return logger
-
-
-def get_db() -> connector.connection.MySQLConnection:
-    """ Establishes a database connection """
-    username = os.getenv('PERSONAL_DATA_DB_USERNAME') or "root"
-    password = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ""
-    host = os.getenv('PERSONAL_DATA_DB_HOST') or "localhost"
-    database = os.getenv('PERSONAL_DATA_DB_NAME')
-    connection = connector.connect(host=host, database=database,
-                                   user=username, password=password)
-    return connection
 
 
 def main() -> None:
