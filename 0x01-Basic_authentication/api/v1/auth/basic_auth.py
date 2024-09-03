@@ -50,11 +50,16 @@ class BasicAuth(Auth):
                                      str) -> TypeVar('User'):
         """ Creates user object from user credentials
         """
-        if not user_email or not isinstance(user_email, str):
+        if not user_email or type(user_email) is not str:
             return None
-        if not user_pwd or not isinstance(user_pwd, str):
+        if not user_pwd or type(user_pwd) is not str:
             return None
-        user = User()
-        user.email = user_email
-        user.password = user_pwd
-        return user
+        try:
+            users = User.search(attributes={"email": user_email})
+        except KeyError:
+            return None
+        if not users:
+            return None
+        for user in users:
+            if user.is_valid_password(user_pwd):
+                return user
