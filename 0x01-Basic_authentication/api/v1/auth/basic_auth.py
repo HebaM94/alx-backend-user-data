@@ -12,10 +12,12 @@ from typing import Optional, Tuple, TypeVar
 class BasicAuth(Auth):
     """ Basic authentication class
     """
-    def extract_base64_authorization_header(self, authorization_header: str) -> str:
+    def extract_base64_authorization_header(self, authorization_header:
+                                            str) -> Optional[str]:
         """ Retrieves authentication parameters form authorization header
         """
-        if not authorization_header or not isinstance(authorization_header, str):
+        if not authorization_header or not isinstance(authorization_header,
+                                                      str):
             return None
         if not authorization_header.startswith('Basic '):
             return None
