@@ -13,7 +13,7 @@ class BasicAuth(Auth):
     """ Basic authentication class
     """
     def extract_base64_authorization_header(self, authorization_header:
-                                            str) -> Optional[str]:
+                                            str) -> str:
         """ Retrieves authentication parameters form authorization header
         """
         if not authorization_header or not isinstance(authorization_header,
@@ -22,3 +22,15 @@ class BasicAuth(Auth):
         if not authorization_header.startswith('Basic '):
             return None
         return authorization_header[6:]
+    
+    def decode_base64_authorization_header(self, base64_authorization_header:
+                                           str) -> str:
+        """ Decodes base64 authorization header
+        """
+        if not base64_authorization_header or not isinstance(
+                base64_authorization_header, str):
+            return None
+        try:
+            return b64decode(base64_authorization_header).decode('utf-8')
+        except binascii.Error:
+            return None
