@@ -8,7 +8,6 @@ from uuid import uuid4
 from os import getenv
 
 
-
 class SessionAuth(Auth):
     """ validate if everything inherits correctly without any overloading
     and the “switch” by using environment variables
