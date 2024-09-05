@@ -3,9 +3,7 @@
 """
 from api.v1.auth.auth import Auth
 from models.user import User
-from typing import Dict, TypeVar
 from uuid import uuid4
-from os import getenv
 
 
 class SessionAuth(Auth):
@@ -30,12 +28,15 @@ class SessionAuth(Auth):
             return None
         return self.user_id_by_session_id.get(session_id)
 
-    def current_user(self, request=None) -> TypeVar('User'):
+    def current_user(self, request=None):
         """ Get a User instance for a Session ID
         """
-        session_id = self.authorization_header(request)
+        if not request:
+            return None
+        session_id = self.session_cookie(request)
         user_id = self.user_id_for_session_id(session_id)
-        return User.get(user_id)
+        current_user = User.get(user_id)
+        return current_user
 
     def destroy_session(self, request=None) -> bool:
         """ Delete the user session / log out
