@@ -4,6 +4,7 @@
 from api.v1.auth.auth import Auth
 from models.user import User
 from uuid import uuid4
+from os import getenv
 
 
 class SessionAuth(Auth):
@@ -41,13 +42,13 @@ class SessionAuth(Auth):
     def destroy_session(self, request=None) -> bool:
         """ Delete the user session / log out
         """
-        if request is None:
+        if not request:
             return False
-        session_id = self.authorization_header(request)
-        if session_id is None:
+        session_id = request.cookies.get(getenv('SESSION_NAME'))
+        if not session_id:
             return False
         user_id = self.user_id_for_session_id(session_id)
-        if user_id is None:
+        if not user_id:
             return False
-        del self.user_id_by_session_id[session_id]
+        SessionAuth.user_id_by_session_id.pop(session_id)
         return True
