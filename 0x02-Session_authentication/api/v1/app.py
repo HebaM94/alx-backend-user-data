@@ -61,6 +61,10 @@ def before_request():
     if not auth.current_user(request):
         abort(403)
     request.current_user = auth.current_user(request)
+    session_cookie = auth.session_cookie(request)
+    auth_header = auth.authorization_header(request)
+    if not session_cookie and not auth_header:
+        abort(401)
 
 
 if __name__ == "__main__":
