@@ -31,7 +31,7 @@ class Auth:
         """ Get the current user from the request
         """
         return None
-    
+
     def session_cookie(self, request=None):
         """ Get the session cookie from the request
         """
@@ -39,4 +39,3 @@ class Auth:
             return None
         session_cookie = request.cookies.get(getenv('SESSION_NAME'))
         return session_cookie
-    
