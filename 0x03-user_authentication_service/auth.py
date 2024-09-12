@@ -50,3 +50,9 @@ class Auth:
         except NoResultFound:
             return False
         return bcrypt.checkpw(password.encode(), user.hashed_password)
+
+
+def _generate_uuid() -> str:
+    """ Generates string representation of a new UUID
+    """
+    return str(uuid4())
