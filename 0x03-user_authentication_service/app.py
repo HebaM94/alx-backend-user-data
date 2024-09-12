@@ -5,6 +5,8 @@ from auth import Auth
 from flask import Flask, abort, jsonify, request, redirect, url_for
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
+app.config["JSONIFY_PRETTYPRINT_REGULAR"] = True
 AUTH = Auth()
 
 
@@ -16,7 +18,7 @@ def home() -> str:
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route("/users", methods=["POST"], strict_slashes=False)
+@app.route("/users", methods=["POST"])
 def user() -> str:
     """ Register user endpoint
         Return: User created message JSON represented
@@ -91,9 +93,9 @@ def reset_password():
     """
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
-    password = request.form.get("new_password")
+    new_password = request.form.get("new_password")
     try:
-        AUTH.reset_password(reset_token, password)
+        AUTH.update_password(reset_token, new_password)
     except ValueError:
         abort(403)
     return jsonify({"email": email, "message": "Password updated"}), 200
