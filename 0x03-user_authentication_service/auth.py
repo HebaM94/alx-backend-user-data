@@ -105,6 +105,21 @@ class Auth:
         db.update_user(user.id, reset_token=reset_token)
         return reset_token
 
+    def update_password(self, reset_token: str, password: str) -> None:
+        """Updates user's password
+            Args:
+                - reset_token: user's reset token
+                - password: user's new password
+        """
+        db = self._db
+        try:
+            user = db.find_user_by(reset_token=reset_token)
+        except NoResultFound:
+            raise ValueError
+        db.update_user(user.id, hashed_password=_hash_password(password))
+        db.update_user(user.id, reset_token=None)
+        return None
+
 
 def _generate_uuid() -> str:
     """ Generates string representation of a new UUID
