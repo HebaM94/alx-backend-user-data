@@ -31,7 +31,7 @@ def user() -> str:
 
 
 @app.route("/sessions", methods=["POST"])
-def login() -> str:
+def login():
     """ Login
         Return: Session ID JSON represented
     """
@@ -40,7 +40,7 @@ def login() -> str:
     user_id = AUTH.valid_login(email, password)
     if not user_id:
         abort(401)
-    session_id = AUTH.create_session(user_id)
+    session_id = AUTH.create_session(email)
     response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie("session_id", session_id)
     return response
