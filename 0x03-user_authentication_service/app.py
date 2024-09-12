@@ -45,6 +45,7 @@ def login():
     response.set_cookie("session_id", session_id)
     return response
 
+
 @app.route("/sessions", methods=["DELETE"])
 def logout():
     """Logout endpoint
