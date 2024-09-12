@@ -32,7 +32,7 @@ def user() -> str:
 
 @app.route("/sessions", methods=["POST"])
 def login():
-    """ Login
+    """ Login endpoint
         Return: Session ID JSON represented
     """
     email = request.form.get("email")
@@ -44,6 +44,18 @@ def login():
     response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie("session_id", session_id)
     return response
+
+@app.route("/sessions", methods=["DELETE"])
+def logout():
+    """Logout endpoint
+        Return: redirect to home page
+    """
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if not user:
+        abort(403)
+    AUTH.destroy_session(user.id)
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
