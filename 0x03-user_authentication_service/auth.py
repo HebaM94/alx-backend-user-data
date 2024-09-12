@@ -51,6 +51,21 @@ class Auth:
             return False
         return bcrypt.checkpw(password.encode(), user.hashed_password)
 
+    def create_session(self, email: str) -> str:
+        """Create a new session
+            Args:
+                - email: user's email
+            Return: New session ID
+        """
+        db = self._db
+        try:
+            user = db.find_user_by(email=email)
+        except NoResultFound:
+            return None
+        session_id = _generate_uuid()
+        db.update_user(user.id, session_id=session_id)
+        return session_id
+
 
 def _generate_uuid() -> str:
     """ Generates string representation of a new UUID
